@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+	</head>
+	<style type="text/css">
+		body {
+			width: auto;
+			height: auto;
+			background: #ccc;
+			margin: 0px;
+		}
+		
+		#mycanvas {
+			background: #fff;
+			/*background: url(img/bg.jpg) repeat scroll top left;*/
+		}
+	</style>
+	<script type="text/javascript">
+		var playerx=120,playery=400;
+		var click=false;
+		var score=0;
+		var y=-(1126-560);
+		var y1=-(1126-560)-1126;
+		var timer;
+		var bulletx=playerx;
+		var bullety=playery;
+//		var foodY=10;
+//		var foodX;
+//		var moonCake1,moonCake2;
+		var moonCake=[];
+		var bullet=[];
+		
+		setInterval(function(){
+			moonCake.push({x:Math.floor(Math.random()*250),y:-50,type:Math.floor(Math.random()*2)})
+			
+		},1000)
+		
+		setInterval(function(){
+			bullet.push({x:playerx,y:playery})
+		},300)
+		window.onload = function() {
+			//定义对象
+			var canvas = document.getElementById("mycanvas");
+			var pen = canvas.getContext("2d");
+			var bg = document.getElementById("bg");
+			var food1=document.getElementById("food1");
+			var food2=document.getElementById("food2");
+			var player = document.getElementById("player");
+			var life = document.getElementById("life");
+			var heart = document.getElementById("heart");
+			pen.lineWidth = 5;
+			pen.fillStyle = "white";
+			pen.font = "30px 黑体";
+			pen.fillText("0", 260, 60);
+		
+			//定时函数
+			timer=setInterval(drawbg,50);
+			function drawbg(){
+
+				y=y+5;
+				y1+=5;
+				if(y1>=560-1126){
+					y=-(1126-560);
+					y1=-(1126-560)-1126;
+				}
+				
+				pen.drawImage(bg, 0,y );
+				pen.drawImage(bg,0,y1);
+				//画兔子
+				canvas.touchstart=function(){
+					click=true;
+				}
+				canvas.onmousedown=function(){
+					click=true;
+				}
+				canvas.touchend=function(){
+					click=false;
+				}
+				canvas.onmouseup=function(){
+					click=false;
+				}
+//				canvas.ondrag
+				canvas.touchmove=function(event){
+				if(click==true){
+					playerx=event.screenX-35;
+					playery=event.screenY-35;
+//					playerx=event.offsetX-35;
+//				playery=event.offsetY-35;
+				}		
+			}
+				canvas.onmousemove=function(event){
+					if(click==true){
+					playerx=event.offsetX-35;
+				playery=event.offsetY-35;
+				}	
+				}
+//				if(foodX%2!=0){
+//					pen.drawImage(food1,foodX,foodY,50,50);
+//				}
+//			else{
+//				pen.drawImage(food2,foodX,foodY,50,50);
+//			}
+//			pen.drawImage(food2,foodX[1],foodY,50,50);
+			
+			for(var i=0;i<moonCake.length;i++){
+				moonCake[i].y+=5;
+				
+				if(moonCake[i].type==0){
+					pen.drawImage(food1,moonCake[i].x,moonCake[i].y,50,50);
+				}else if(moonCake[i].type==1){
+				pen.drawImage(food2,moonCake[i].x,moonCake[i].y,50,50);
+				}else{
+					
+				}
+				
+//				if(moonCake[i].y>=800){
+//					moonCake.splice(i,1);
+//				}
+				
+if(moonCake[i].x+50>=playerx&&playerx+70>=moonCake[i].x&&moonCake[i].y+50>=playery&&playery+70>=moonCake[i].y){
+					
+					if(moonCake[i].type==0){
+						score--;
+						if(score<1){
+//							clearInterval(timer);
+//							alert("你死了");
+						}
+					}else{
+						score++;
+						if(score>2){
+							
+						}
+					}
+					moonCake[i].y=690;
+				}
+			}
+			
+			for(var i=0;i<bullet.length;i++){
+				bullet[i].y-=7;
+				pen.drawImage(food1,bullet[i].x+30,bullet[i].y,10,10);
+				for(var j=0;j<moonCake.length;j++){
+				if(bullet[i].x+10>=moonCake[j].x-10&&bullet[i].x<=moonCake[j].x+50&&bullet[i].y<=moonCake[j].y+50&&bullet[i].y+10>=moonCake[j].y){
+					moonCake[j].y=690;
+					if(moonCake[j].type==0){
+						score++;
+					}else{
+						score--;
+					}
+				
+				}
+				}
+
+//				console.log("1111111");
+			}
+			
+			pen.drawImage(life, 190, 30, 120, 40);
+			pen.drawImage(heart, 192, 33, 30, 30);
+			pen.lineWidth = 5;
+			pen.fillStyle = "white";
+			pen.font = "30px 黑体";
+			pen.fillText(score, 260, 60);
+			pen.drawImage(player, playerx, playery, 70, 70);
+			
+			}
+			
+			
+			
+			
+		}
+		
+//		function getResult(moonCake[]){
+//			
+//		}
+		
+	</script>
+
+	<body>
+		<canvas id="mycanvas" width="320px" height="560px">
+			
+		</canvas>
+		<div id="">
+			<img src="img/bg.jpg" id="bg" hidden="" />
+			<img src="img/player.png" id="player" hidden="" />
+			<img src="img/scorebg.png" id="life" hidden="" />
+			<img src="img/heart.png" id="heart" hidden="" />
+			<img src="img/food1.png" id="food1" hidden=""/>
+			<img src="img/food2.png" id="food2" hidden=""/>
+		</div>
+
+	</body>
+
+</html>
